@@ -53,6 +53,23 @@ This is a FastAPI-based job recommender system using a BERT model.
 5. Railway will automatically detect the `Procfile` and install dependencies.
 6. The app will be available at the generated Railway URL.
 
+## Deploying on Azure App Service
+
+1. Push your code to a GitHub repository.
+2. Create a new Web App in Azure Portal.
+3. Set the startup command to:
+   ```bash
+   ./startup.sh
+   ```
+4. Ensure the following files are present:
+   - `requirements.txt`
+   - `startup.sh`
+   - `main.py`
+   - `data/wuzzuf_02_4_part3.csv`
+5. Configure environment variables as needed in Azure Portal.
+6. Deploy your code via GitHub Actions or ZIP upload.
+7. Azure will install dependencies and run the app using Gunicorn and Uvicorn workers.
+
 ## API Endpoints
 
 - `GET /` - Health check
