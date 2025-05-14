@@ -1,0 +1,48 @@
+# Bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual environments
+venv/
+.venv/
+.Python
+
+# Environment files
+.env*
+*.env
+
+# Jupyter notebooks and IPython checkpoints
+*.ipynb
+.ipynb_checkpoints/
+
+# Git and VS Code
+.git/
+.gitignore
+.vscode/
+
+# Test and local folders not needed in production
+tests/
+scripts/
+postman/
+./postgres-data/
+
+# Data files (optional: if mounted separately in production)
+*.tsv
+*.xlsx
+*.json
+
+# Package and distribution
+*.egg-info
+*.whl
+*.tar.gz
+
+# Others
+coverage.xml
+*,cover
+.tox
+.cache
+pip-log.txt
+pip-delete-this-directory.txt
