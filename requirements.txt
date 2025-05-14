@@ -3,6 +3,7 @@ uvicorn==0.15.0
 pydantic
 pandas
 scikit-learn
+sentencepiece==0.1.99 --no-build-isolation
 sentence-transformers==2.2.2
 gunicorn==20.1.0
 
