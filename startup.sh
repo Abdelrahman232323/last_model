@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Set Python to use UTF-8
-export PYTHONIOENCODING=utf-8
+# Activate virtual environment
+source /home/site/wwwroot/antenv/bin/activate
 
-# Set environment variables for better performance
-export PYTHONUNBUFFERED=1
-export PYTHONDONTWRITEBYTECODE=1
+# Install requirements
+pip install -r /home/site/wwwroot/requirements.txt
 
-# Start the application with Gunicorn
-gunicorn -k uvicorn.workers.UvicornWorker main:app --bind=0.0.0.0 --timeout 600 --workers 2 --threads 4 
+# Start the application
+cd /home/site/wwwroot
+gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 
