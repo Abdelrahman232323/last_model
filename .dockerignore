@@ -1,9 +1,37 @@
-__pycache__
-*.pyc
-*.pyo
-*.pyd
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 .Python
-.env*
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Git
+.git
+.gitignore
+
+# Data
+data/*.csv
+!data/wuzzuf_02_4_part3.csv
+
+# Logs
+*.log
+logs/
+
+# Local development
+.DS_Store
+Thumbs.db
+
 pip-log.txt
 pip-delete-this-directory.txt
 .tox
@@ -13,11 +41,8 @@ pip-delete-this-directory.txt
 nosetests.xml
 coverage.xml
 *,cover
-*.log
-.git*
 tests
 scripts
 postman
 ./postgres-data
 .ipynb_checkpoints/
-.vscode/
