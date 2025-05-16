@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - FastAPIendPoint
+name: Build and deploy Python app to Azure Web App - AbdelrhmanAPI
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.10'
 
       - name: Create and start virtual environment
         run: |
@@ -68,14 +68,14 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B14863AACC524E7F89BEDFCF27437CF0 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F0D8D49840244EF0BEF5D8D321D088B7 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F5F6A6497EAA4027BE6B8967E911375C }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BA7E9C5AC9EF43699CEFE39DA4B48D87 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F28A73E88C5F4E7C8816028A92411608 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5B4395479F5A467595963FFCAA3DB038 }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'FastAPIendPoint'
+          app-name: 'AbdelrhmanAPI'
           slot-name: 'Production'
           
