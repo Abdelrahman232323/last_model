@@ -10,6 +10,12 @@ export PYTHONDONTWRITEBYTECODE=1
 # Azure App Service specific settings
 export WEBSITE_RUN_FROM_PACKAGE=1
 export SCM_DO_BUILD_DURING_DEPLOYMENT=true
+export PYTHON_VERSION=3.11
+
+# Memory optimization for Basic B3 (7GB RAM)
+export GUNICORN_CMD_ARGS="--max-requests=1000 --max-requests-jitter=50 --timeout=300 --keep-alive=5"
+export PYTHONMALLOC=malloc
+export PYTHONHASHSEED=0
 
 # Function to compress directory with error handling and retries
 compress_directory() {
@@ -95,7 +101,7 @@ handle_deployment_compression() {
 rm -rf /home/site/wwwroot/output.tar.gz
 rm -rf /tmp/_preCompressedDestinationDir
 
-# Install dependencies
+# Install dependencies with specific versions for Python 3.11
 pip install --upgrade pip
 pip install -r requirements.txt
 
@@ -104,5 +110,26 @@ if [ -d "/tmp/_preCompressedDestinationDir" ]; then
     handle_deployment_compression
 fi
 
-# Start the application with Gunicorn and Uvicorn worker
-exec gunicorn -k uvicorn.workers.UvicornWorker main:app --bind=0.0.0.0:8000 --timeout 600 --workers 2 --threads 4 
+# Calculate optimal worker count based on CPU cores (4 cores for B3)
+# Using (2 * CPU cores) + 1 formula, but capped at 4 for B3
+WORKERS=4
+THREADS=4
+
+# Start the application with optimized Gunicorn settings for B3
+exec gunicorn \
+    -k uvicorn.workers.UvicornWorker \
+    main:app \
+    --bind=0.0.0.0:8000 \
+    --timeout=300 \
+    --workers=$WORKERS \
+    --threads=$THREADS \
+    --worker-class=uvicorn.workers.UvicornWorker \
+    --worker-connections=1000 \
+    --max-requests=1000 \
+    --max-requests-jitter=50 \
+    --keep-alive=5 \
+    --log-level=info \
+    --access-logfile=- \
+    --error-logfile=- \
+    --capture-output \
+    --enable-stdio-inheritance 
