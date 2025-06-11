@@ -22,7 +22,7 @@ class UserProfile(BaseModel):
 async def load_model():
     global recommender
     try:
-        data_path = "data/Data_116.csv"
+        data_path = "data_Set/Data_116.csv"
         if not os.path.exists(data_path):
             raise FileNotFoundError(f"Dataset not found at {data_path}")
         recommender = BERTJobRecommender(data_path)
