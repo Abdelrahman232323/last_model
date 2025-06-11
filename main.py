@@ -22,7 +22,7 @@ class UserProfile(BaseModel):
 async def load_model():
     global recommender
     try:
-        data_path = "data/wuzzuf_02_4_part3.csv"
+        data_path = "data/Data_116.csv"
         if not os.path.exists(data_path):
             raise FileNotFoundError(f"Dataset not found at {data_path}")
         recommender = BERTJobRecommender(data_path)
@@ -45,9 +45,19 @@ async def recommend_jobs(profile: UserProfile):
         user_text = f"{profile.degree} in {profile.major}, GPA {profile.gpa}, " \
                     f"{profile.experience} years experience. Skills: {profile.skills}"
         
-        recommendations = recommender.recommend(user_text, top_k=10)
+        recommendations = recommender.recommend(user_text, top_k=50)
         gc.collect()  # Clean up after processing
         return {"recommended_jobs": recommendations}
     except Exception as e:
         print(f"[ERROR]: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+# Run the application
+if __name__ == "__main__":
+    uvicorn.run(
+        "main:app", 
+        host="127.0.0.1", 
+        port=8000, 
+        reload=True,
+        log_level="info"
+    )

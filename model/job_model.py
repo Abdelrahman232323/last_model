@@ -39,6 +39,9 @@ class BERTJobRecommender:
         semantic_similarities = cosine_similarity([user_embedding], self.job_skills_embeddings).flatten()
         keyword_similarities = self.df['Skills'].apply(lambda x: self.keyword_similarity_fuzzy(skills, x)).values
 
+        semantic_similarities = np.nan_to_num(semantic_similarities, nan=0.0)
+        keyword_similarities = np.nan_to_num(keyword_similarities, nan=0.0)
+
         combined_similarities = 0.5 * keyword_similarities + 0.5 * semantic_similarities
 
         self.df['semantic_similarity'] = semantic_similarities
@@ -50,15 +53,38 @@ class BERTJobRecommender:
 
         results = []
         for idx, row in top_matches.iterrows():
-            score = round(row['combined_similarity'] * 100, 2)
+            combined_score = float(row['combined_similarity'])
+            semantic_score = float(row['semantic_similarity']) 
+            keyword_score = float(row['keyword_similarity'])
+            
+            if np.isnan(combined_score):
+                combined_score = 0.0
+            if np.isnan(semantic_score):
+                semantic_score = 0.0
+            if np.isnan(keyword_score):
+                keyword_score = 0.0
+            
+            # Helper function to safely get string values
+            def safe_get(value, default=''):
+                if pd.isna(value) or value is None:
+                    return default
+                return str(value)
+            
             result = {
-                "job_title": row['Job_Title'],
-                "company": row['Company_Name'],
-                "skills_required": row['Skills'],
-                "combined_match_score": f"{score}%",
-                "semantic_score": f"{round(row['semantic_similarity'] * 100, 2)}%",
-                "keyword_score": f"{round(row['keyword_similarity'] * 100, 2)}%",
-                "job_link": row['Job_Link']
+                "job_title": safe_get(row['Job_Title']),
+                "company": safe_get(row['Company_Name']),
+                "skills_required": safe_get(row['Skills']),
+                "combined_match_score": f"{round(combined_score * 100, 2)}%",
+                "semantic_score": f"{round(semantic_score * 100, 2)}%",
+                "keyword_score": f"{round(keyword_score * 100, 2)}%",
+                "job_link": safe_get(row['Job_Link']),
+                "job_description": safe_get(row.get('Job_Description'), ''),
+                "experience": safe_get(row.get('Experience_Level'), ''),
+                "work_type": safe_get(row.get('Work_Type'), ''),
+                "job_type": safe_get(row.get('Job_Type'), ''),
+                "location": safe_get(row.get('Location'), ''),
+                "date_posted": safe_get(row.get('Date_Post'), ''),
+                "image_link": safe_get(row.get('Image_Link'), ''),
             }
             results.append(result)
         return results
