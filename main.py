@@ -3,6 +3,12 @@ from pydantic import BaseModel
 from model.job_model import BERTJobRecommender
 import os
 import gc
+import logging
+import asyncio
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Job Recommender API", 
              description="A FastAPI-based job recommender system using BERT model",
@@ -25,10 +31,17 @@ async def load_model():
         data_path = "data_Set/Data.csv"
         if not os.path.exists(data_path):
             raise FileNotFoundError(f"Dataset not found at {data_path}")
-        recommender = BERTJobRecommender(data_path)
-        gc.collect()  # Force garbage collection after model loading
+        
+        logger.info("Loading BERT model...")
+        # Run model loading in a separate thread to prevent blocking
+        loop = asyncio.get_event_loop()
+        recommender = await loop.run_in_executor(None, BERTJobRecommender, data_path)
+        logger.info("Model loaded successfully")
+        
+        # Force garbage collection
+        gc.collect()
     except Exception as e:
-        print(f"[ERROR] Failed to load model: {e}")
+        logger.error(f"Failed to load model: {str(e)}")
         raise
 
 @app.get("/")
@@ -41,13 +54,21 @@ async def recommend_jobs(profile: UserProfile):
         global recommender
         if recommender is None:
             raise HTTPException(status_code=503, detail="Model not loaded")
-
+            
         user_text = f"{profile.degree} in {profile.major}, GPA {profile.gpa}, " \
                     f"{profile.experience} years experience. Skills: {profile.skills}"
-
-        recommendations = recommender.recommend(user_text, top_k=10)
-        gc.collect()  # Clean up after processing
+        
+        logger.info(f"Processing recommendation for user: {profile.name}")
+        # Run recommendation in a separate thread
+        loop = asyncio.get_event_loop()
+        recommendations = await loop.run_in_executor(None, recommender.recommend, user_text, 10)
+        
+        # Clean up
+        gc.collect()
+        
         return {"recommended_jobs": recommendations}
     except Exception as e:
-        print(f"[ERROR]: {e}")
+        logger.error(f"Error during recommendation: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        gc.collect()
