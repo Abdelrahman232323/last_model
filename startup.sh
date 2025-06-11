@@ -7,6 +7,10 @@ export PYTHONIOENCODING=utf-8
 export PYTHONUNBUFFERED=1
 export PYTHONDONTWRITEBYTECODE=1
 
+# Azure App Service specific settings
+export WEBSITE_RUN_FROM_PACKAGE=1
+export SCM_DO_BUILD_DURING_DEPLOYMENT=true
+
 # Function to compress directory with error handling and retries
 compress_directory() {
     local source_dir="$1"
@@ -86,6 +90,10 @@ handle_deployment_compression() {
         return 1
     fi
 }
+
+# Clean up any existing deployment artifacts
+rm -rf /home/site/wwwroot/output.tar.gz
+rm -rf /tmp/_preCompressedDestinationDir
 
 # Install dependencies
 pip install --upgrade pip
