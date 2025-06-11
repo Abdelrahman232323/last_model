@@ -1,31 +1,28 @@
-# Build tools
-setuptools==65.5.1
-wheel==0.38.4
-
-# Web framework
+# Core dependencies
 fastapi==0.95.2
 uvicorn==0.22.0
-gunicorn==20.1.0
-
-# Data validation
 pydantic==1.10.7
 
 # Data processing
 pandas==1.5.3
 numpy==1.24.3
 scikit-learn==1.2.2
-xlrd==2.0.1
 
-# Machine learning / NLP
-sentence-transformers==2.2.2
-torch==2.0.1
+# Machine learning
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==2.0.1+cpu
 transformers==4.28.1
+sentence-transformers==2.2.2
 
 # String similarity
 fuzzywuzzy==0.18.0
 python-Levenshtein==0.21.1
 
-# Azure specific
+# Azure
 azure-functions==1.15.0
 azure-identity==1.12.0
 azure-storage-blob==12.16.0
+
+# Additional dependencies
+typing-extensions>=4.0.0  # Required by pydantic
+starlette>=0.26.0  # Required by fastapi

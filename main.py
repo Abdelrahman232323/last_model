@@ -3,6 +3,11 @@ from pydantic import BaseModel
 from model.job_model import BERTJobRecommender
 import os
 import gc
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Job Recommender API", 
              description="A FastAPI-based job recommender system using BERT model",
@@ -25,10 +30,15 @@ async def load_model():
         data_path = "data_Set/Data.csv"
         if not os.path.exists(data_path):
             raise FileNotFoundError(f"Dataset not found at {data_path}")
+        
+        logger.info("Loading BERT model...")
         recommender = BERTJobRecommender(data_path)
-        gc.collect()  # Force garbage collection after model loading
+        logger.info("Model loaded successfully")
+        
+        # Force garbage collection
+        gc.collect()
     except Exception as e:
-        print(f"[ERROR] Failed to load model: {e}")
+        logger.error(f"Failed to load model: {str(e)}")
         raise
 
 @app.get("/")
@@ -45,9 +55,15 @@ async def recommend_jobs(profile: UserProfile):
         user_text = f"{profile.degree} in {profile.major}, GPA {profile.gpa}, " \
                     f"{profile.experience} years experience. Skills: {profile.skills}"
         
+        logger.info(f"Processing recommendation for user: {profile.name}")
         recommendations = recommender.recommend(user_text, top_k=50)
-        gc.collect()  # Clean up after processing
+        
+        # Clean up
+        gc.collect()
+        
         return {"recommended_jobs": recommendations}
     except Exception as e:
-        print(f"[ERROR]: {e}")
+        logger.error(f"Error during recommendation: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        gc.collect()
