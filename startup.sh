@@ -1,20 +1,15 @@
 #!/bin/bash
 
-# Set UTF-8 encoding for Python I/O
+# Set Python to use UTF-8
 export PYTHONIOENCODING=utf-8
 
-# Environment variables for better performance and cleaner logging
+# Set environment variables for better performance
 export PYTHONUNBUFFERED=1
 export PYTHONDONTWRITEBYTECODE=1
 
-# Upgrade pip and install required packages
+# Install dependencies
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# Start the FastAPI app using Gunicorn with Uvicorn workers
-exec gunicorn main:app \
-    --workers 2 \
-    --threads 4 \
-    --worker-class uvicorn.workers.UvicornWorker \
-    --bind 0.0.0.0:8000 \
-    --timeout 600
+# Start the application with Gunicorn and Uvicorn worker
+exec gunicorn -k uvicorn.workers.UvicornWorker main:app --bind=0.0.0.0:8000 --timeout 600 --workers 2 --threads 4 

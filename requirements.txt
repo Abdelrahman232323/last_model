@@ -1,28 +1,15 @@
-# Core API - minimal versions
-fastapi==0.95.2
-uvicorn==0.22.0
-pydantic==1.10.7
-
-# Data processing - optimized versions
-pandas==1.5.3
-numpy==1.24.3
-scikit-learn==1.2.2
-
-# ML - CPU optimized
---find-links https://download.pytorch.org/whl/torch_stable.html
-torch==2.0.1+cpu
-transformers==4.28.1
-sentence-transformers==2.2.2
-
-# String similarity
-fuzzywuzzy==0.18.0
-python-Levenshtein==0.21.1
-
-# Azure specific
-azure-functions==1.15.0
-azure-identity==1.12.0
-azure-storage-blob==12.16.0
-
-# Additional dependencies
-typing-extensions>=4.0.0  # Required by pydantic
-starlette>=0.26.0  # Required by fastapi
+setuptools>=68.0.0
+wheel>=0.41.0
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.6.0
+pandas>=2.2.0
+numpy>=1.26.0
+sentence-transformers>=2.5.0
+scikit-learn>=1.4.0
+fuzzywuzzy>=0.18.0
+python-Levenshtein>=0.23.0
+xlrd>=2.0.1
+gunicorn>=21.2.0
+torch>=2.2.0
+transformers>=4.37.0
